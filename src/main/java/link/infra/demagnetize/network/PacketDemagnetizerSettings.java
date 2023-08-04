@@ -55,7 +55,7 @@ public class PacketDemagnetizerSettings {
 		ctx.get().enqueueWork(() -> {
 			ServerPlayer playerEntity = ctx.get().getSender();
 			if (playerEntity == null) return;
-			Level world = playerEntity.getLevel();
+			Level world = playerEntity.level();
 
 			if (world.isAreaLoaded(demagnetizerBlockPos, 1)) {
 				BlockEntity te = world.getBlockEntity(demagnetizerBlockPos);

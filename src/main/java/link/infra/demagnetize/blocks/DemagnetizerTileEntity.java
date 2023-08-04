@@ -309,7 +309,7 @@ public class DemagnetizerTileEntity extends BlockEntity implements MenuProvider 
 			if (filterStack.isEmpty()) {
 				continue;
 			}
-			if (filterStack.sameItemStackIgnoreDurability(matchingItem)) {
+			if (ItemStack.isSameItem(filterStack, matchingItem)) {
 				return true;
 			}
 		}

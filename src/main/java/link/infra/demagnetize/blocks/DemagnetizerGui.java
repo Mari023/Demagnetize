@@ -1,19 +1,16 @@
 package link.infra.demagnetize.blocks;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import link.infra.demagnetize.Demagnetize;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
@@ -76,34 +73,35 @@ public class DemagnetizerGui extends AbstractContainerScreen<DemagnetizerContain
 	}
 
 	@Override
-	protected void renderBg(@Nonnull PoseStack stack, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShaderTexture(0, background);
-		blit(stack, leftPos, topPos, 0, 0, 176, 166);
+	protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+		//RenderSystem.setShaderTexture(0, background);
+		graphics.blit(background, leftPos, topPos, 0, 0, 176, 166);
+		//blit(stack, leftPos, topPos, 0, 0, 176, 166);
 		for (int i = 0; i < te.getFilterSize(); i++) {
-			blit(stack, leftPos + 7 + (i * 18), topPos + 52, 0, 166, 18, 18);
+			graphics.blit(background, leftPos + 7 + (i * 18), topPos + 52, 0, 166, 18, 18);
+			//blit(stack, leftPos + 7 + (i * 18), topPos + 52, 0, 166, 18, 18);
 		}
 	}
 
 	@Override
-	protected void renderLabels(@Nonnull PoseStack stack, int mouseX, int mouseY) {
-		String demagName = title.getString();
-		int centeredPos = (imageWidth - font.width(demagName)) / 2;
-		font.draw(stack, demagName, centeredPos, 6, 0x404040);
-		font.draw(stack, playerInventoryTitle, 8, imageHeight - 96 + 3, 0x404040);
+	protected void renderLabels(@Nonnull GuiGraphics graphics, int mouseX, int mouseY) {
+		int centeredPos = (imageWidth - font.width(title)) / 2;
+		graphics.drawString(font, title, centeredPos, 6, 0x404040, false);
+		graphics.drawString(font, playerInventoryTitle, 8, imageHeight - 96 + 3, 0x404040, false);
 		if (hasFilter) {
-			font.draw(stack, I18n.get("label." + Demagnetize.MODID + ".demagnetizer.filter"), 8, 42, 0x404040);
+			graphics.drawString(font, Component.translatable("label." + Demagnetize.MODID + ".demagnetizer.filter"), 8, 42, 0x404040, false);
 		}
 	}
 
 	@Override
-	public void render(@Nonnull PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(stack);
-		super.render(stack, mouseX, mouseY, partialTicks);
-		renderTooltip(stack, mouseX, mouseY);
+	public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(graphics);
+		super.render(graphics, mouseX, mouseY, partialTicks);
+		renderTooltip(graphics, mouseX, mouseY);
 
-		rsButton.renderTooltip(stack, mouseX, mouseY);
+		rsButton.renderTooltip(graphics, mouseX, mouseY);
 		if (hasFilter) {
-			whitelistButton.renderTooltip(stack, mouseX, mouseY);
+			whitelistButton.renderTooltip(graphics, mouseX, mouseY);
 		}
 	}
 
@@ -119,7 +117,7 @@ public class DemagnetizerGui extends AbstractContainerScreen<DemagnetizerContain
 		private final static int minValue = 1;
 
 		RangeSlider(int x, int y, int maxRange, int value) {
-			super(x, y, 113, 20, TextComponent.EMPTY, ((float) (value - minValue)) / (float) (maxRange - minValue));
+			super(x, y, 113, 20, Component.empty(), ((float) (value - minValue)) / (float) (maxRange - minValue));
 			scaledValue = value;
 			maxValue = maxRange;
 			visible = true;
@@ -128,7 +126,7 @@ public class DemagnetizerGui extends AbstractContainerScreen<DemagnetizerContain
 
 		@Override
 		protected void updateMessage() {
-			setMessage(new TranslatableComponent("label." + Demagnetize.MODID + ".demagnetizer.range").append(": " + scaledValue));
+			setMessage(Component.translatable("label." + Demagnetize.MODID + ".demagnetizer.range").append(": " + scaledValue));
 		}
 
 		@Override
@@ -146,7 +144,7 @@ public class DemagnetizerGui extends AbstractContainerScreen<DemagnetizerContain
 		private final int resourceY;
 
 		IconButton(int x, int y, String[] stateList, int currentState, ResourceLocation location, int resourceX, int resourceY) {
-			super(x, y, 20, 20, TextComponent.EMPTY);
+			super(x, y, 20, 20, Component.empty());
 
 			this.stateList = stateList;
 			this.currentState = currentState;
@@ -157,27 +155,28 @@ public class DemagnetizerGui extends AbstractContainerScreen<DemagnetizerContain
 		}
 
 		@Override
-		public void updateNarration(@Nonnull NarrationElementOutput output) {
+		public void updateWidgetNarration(@Nonnull NarrationElementOutput output) {
 			//TODO maybe actually do something here
 		}
 
 		@Override
-		public void renderButton(@Nonnull PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-			super.renderButton(stack, mouseX, mouseY, partialTicks);
-			RenderSystem.setShaderTexture(0, location);
-			blit(stack, x, y, resourceX + currentState * width, resourceY, width, height);
+		public void renderWidget(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+			super.renderWidget(graphics, mouseX, mouseY, partialTicks);
+			//RenderSystem.setShaderTexture(0, location);
+			graphics.blit(location, getX(), getY(), resourceX + currentState * width, resourceY, width, height);
+			//blit(stack, getX(), getY(), resourceX + currentState * width, resourceY, width, height);
 		}
 
-		void renderTooltip(PoseStack stack, int mouseX, int mouseY) {
+		void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
 			if (isHovered) {
-				DemagnetizerGui.this.renderTooltip(stack, createNarrationMessage(), mouseX, mouseY);
+				DemagnetizerGui.this.renderTooltip(graphics, mouseX, mouseY);
 			}
 		}
 
 		@Override
 		@Nonnull
 		protected MutableComponent createNarrationMessage() {
-			return new TranslatableComponent("label." + Demagnetize.MODID + ".demagnetizer." + stateList[currentState]);
+			return Component.translatable("label." + Demagnetize.MODID + ".demagnetizer." + stateList[currentState]);
 		}
 
 		@Override

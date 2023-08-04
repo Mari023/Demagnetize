@@ -3,7 +3,7 @@ package link.infra.demagnetize.blocks;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
@@ -43,7 +43,7 @@ public class DemagnetizerEventHandler {
 	}
 
 	@SubscribeEvent
-	public static void itemSpawned(EntityJoinWorldEvent event) {
+	public static void itemSpawned(EntityJoinLevelEvent event) {
 		Entity ent = event.getEntity();
 		if (ent instanceof ItemEntity) {
 			handleItemSpawn((ItemEntity) ent, false);
@@ -70,7 +70,7 @@ public class DemagnetizerEventHandler {
 				}
 
 				// Must be in the same world
-				if (!Objects.equals(te.getLevel(), item.getLevel())) {
+				if (!Objects.equals(te.getLevel(), item.level())) {
 					continue;
 				}
 

@@ -5,7 +5,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,7 +21,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,14 +37,9 @@ public class Demagnetizer extends BaseEntityBlock {
 	private final boolean isAdvanced;
 
 	public Demagnetizer(boolean isAdvanced) {
-		super(Properties.of(Material.STONE).strength(1.0F));
+		super(Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(1.0F));
 
 		this.isAdvanced = isAdvanced;
-		if (isAdvanced) {
-			setRegistryName("demagnetizer_advanced");
-		} else {
-			setRegistryName("demagnetizer");
-		}
 	}
 
 	@Nullable
@@ -60,7 +55,7 @@ public class Demagnetizer extends BaseEntityBlock {
 		if (!world.isClientSide()) {
 			BlockEntity tileEntity = world.getBlockEntity(pos);
 			if (tileEntity instanceof MenuProvider) {
-				NetworkHooks.openGui((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
+				NetworkHooks.openScreen((ServerPlayer) player, (MenuProvider) tileEntity, tileEntity.getBlockPos());
 			} else {
 				throw new IllegalStateException("Demagnetizer TileEntity invalid in onBlockActivated position!");
 			}
@@ -82,7 +77,7 @@ public class Demagnetizer extends BaseEntityBlock {
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flagIn) {
 		if (stack.getTag() != null) {
-			tooltip.add(new TranslatableComponent("tooltip." + Demagnetize.MODID + ".configured").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
+			tooltip.add(Component.translatable("tooltip." + Demagnetize.MODID + ".configured").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
 		}
 	}
 

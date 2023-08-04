@@ -1,12 +1,12 @@
 {
   "parent": "block/cube",
   "textures": {
-    "particle": "demagnetize:blocks/demagnetizer_advanced",
-    "down": "demagnetize:blocks/demagnetizer_advanced_top",
-    "up": "demagnetize:blocks/demagnetizer_advanced_top",
-    "east": "demagnetize:blocks/demagnetizer_advanced",
-    "west": "demagnetize:blocks/demagnetizer_advanced",
-    "north": "demagnetize:blocks/demagnetizer_advanced",
-    "south": "demagnetize:blocks/demagnetizer_advanced"
+    "particle": "demagnetize:block/demagnetizer_advanced",
+    "down": "demagnetize:block/demagnetizer_advanced_top",
+    "up": "demagnetize:block/demagnetizer_advanced_top",
+    "east": "demagnetize:block/demagnetizer_advanced",
+    "west": "demagnetize:block/demagnetizer_advanced",
+    "north": "demagnetize:block/demagnetizer_advanced",
+    "south": "demagnetize:block/demagnetizer_advanced"
   }
 }
